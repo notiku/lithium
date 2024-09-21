@@ -40,11 +40,12 @@ func (c *Cache) Set(key string, value interface{}) {
 
 	if ele, ok := c.Cache[key]; ok {
 		c.Ll.MoveToFront(ele)
-		ele.Value.(*list.Element).Value = value
+		ele.Value.(*cacheItem).val = value
 		return
 	}
 
-	ele := c.Ll.PushFront(&list.Element{Value: value})
+	item := &cacheItem{key: key, val: value}
+	ele := c.Ll.PushFront(item)
 	c.Cache[key] = ele
 
 	if c.Ll.Len() > c.MaxSize {
