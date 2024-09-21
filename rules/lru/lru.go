@@ -13,6 +13,11 @@ type Cache struct {
 	mu      sync.Mutex
 }
 
+type cacheItem struct {
+	key string
+	val interface{}
+}
+
 // Get retrieves a value from the cache.
 // If the key does not exist, it will return nil and false.
 func (c *Cache) Get(key string) (interface{}, bool) {
@@ -51,7 +56,8 @@ func (c *Cache) removeOldest() {
 	ele := c.Ll.Back()
 	if ele != nil {
 		c.Ll.Remove(ele)
-		delete(c.Cache, ele.Value.(*list.Element).Value.(string))
+		item := ele.Value.(*cacheItem)
+		delete(c.Cache, item.key)
 	}
 }
 
