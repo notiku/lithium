@@ -26,7 +26,7 @@ func (c *Cache) Get(key string) (interface{}, bool) {
 
 	if ele, ok := c.Cache[key]; ok {
 		c.Ll.MoveToFront(ele)
-		return ele.Value.(*list.Element).Value, true
+		return ele.Value.(*cacheItem).val, true
 	}
 	return nil, false
 }
@@ -70,7 +70,8 @@ func (c *Cache) Invalidate(key string) bool {
 
 	if ele, ok := c.Cache[key]; ok {
 		c.Ll.Remove(ele)
-		delete(c.Cache, key)
+		item := ele.Value.(*cacheItem)
+		delete(c.Cache, item.key)
 		return true
 	}
 	return false
